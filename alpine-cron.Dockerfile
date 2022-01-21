@@ -22,5 +22,5 @@ RUN mkdir -p /var/log/cron \
 
 COPY /scripts/* /scripts/
 
-ENTRYPOINT ["sh", "/scripts/docker-entrypoint.sh"]
-CMD ["sh", "/scripts/docker-cmd.sh"]
+ENTRYPOINT ["bash", "/scripts/docker-entrypoint.sh"]
+CMD ["bash", "/scripts/docker-cmd.sh"]
