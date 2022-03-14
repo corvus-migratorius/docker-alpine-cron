@@ -3,11 +3,6 @@ A Linux Alpine-based image with `dcron`.
 
 Based on https://github.com/xordiv/docker-alpine-cron project which has not been updated in a while.
 
-# docker-alpine-cron
-A Linux Alpine-based image with `dcron`
-
-Based on https://github.com/xordiv/docker-alpine-cron project which has not been updated in a while.
-
 ## Example
 
 1) Build the base image:
@@ -37,7 +32,6 @@ my_container:
     - /srv/database/secrets:/run/secrets:ro
     - ./backup-db.sh:/backup-db.sh:ro
   environment:
-    # @see https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/DefaultSettings.php
     MYSQL_HOSTNAME: my-database
     MYSQL_USERNAME_FILE: /run/secrets/user-name.txt
     MYSQL_PASSWORD_FILE: /run/secrets/user-password.txt
