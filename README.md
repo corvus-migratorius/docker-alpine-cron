@@ -8,7 +8,7 @@ Based on https://github.com/xordiv/docker-alpine-cron project which has not been
 1) Build the base image:
 
 ```shell
-docker build -f apline-cron.Dockerfile . -t corvus/alpine-cron:3.15.0
+docker build -f alpine-cron.Dockerfile . -t corvus/alpine-cron:3.15.0
 ```
 
 2) Extend the base image:
@@ -20,10 +20,16 @@ RUN apk update && \
     apk add --no-cache mariadb-client
 ```
 
-3) Set up a Docker Compose file
+3) Build the modified image:
+
+```shell
+docker build -f alpine-cron.Dockerfile . -t corvus/mariadb-backups-cron:3.15.0
+```
+
+4) Set up a Docker Compose file
 ```yaml
 my_container:
-  image: agorelyshev/alpine-cron:latest
+  image: corvus/mariadb-backups-cron:3.15.0
   restart: unless-stopped
   hostname: backups-cron
   container_name: backups-cron
@@ -38,7 +44,10 @@ my_container:
     CRON_STRINGS: "0 */2 * * * bash /backup-db.sh"  # notice this is UTC time
  ```
 
-4) Make sure that `user-name.txt` and `user-password.txt` files exist under `/srv/database` or whatever other secure location.
+5) Make sure that `user-name.txt` and `user-password.txt` files exist under `/srv/database` or whatever other secure location.
+
+> Tip: Creating the files with secrets, use `printf` or some other means of emitting strings without a trailing newline character.
+
 
 ## Explanation
 
@@ -48,8 +57,8 @@ We mount a host volume containing database secrets and another host volume that 
 In addition, we mount a shell script that will:
  - read the mounted secrets,
  - connect to a remote database (possibly, residing in another container), and
- - invoke `mysqldump`, directing its output to `/srv/backus:/backups` 
-
+ - invoke `mysqldump`, directing its output to `/srv/backus:/backups`
+ 
 Finally, we set up a string that the `dcron` daemon will consume, directing the daemon to call our script once every 2 hours.
 
 Note that you can supply multiple Cron strings, if you want to use this container to set up multiple Cron jobs.
